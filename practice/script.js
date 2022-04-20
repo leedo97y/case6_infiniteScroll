@@ -5,10 +5,11 @@
     return document.querySelector(target)
   }
 
+  const limit = 10 
   const $posts = get('.posts')
 
   const getPost = async () => {
-    const API_URL = 'https://jsonplaceholder.typicode.com/posts'
+    const API_URL = `https://jsonplaceholder.typicode.com/posts?_limit=${limit}`
     const response = await fetch(API_URL)
     if (!response.ok) {
       throw new Error('에러')
