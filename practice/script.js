@@ -15,6 +15,7 @@
   // $posts를 만들어준다. ==> get 함수를 이용해서 posts라는 클래스에 붙여줌
   // 총 컨텐츠 개수는 100개
   // total은 한페이지당 보이는 컨텐츠 개수
+  const $loader = get('.loader')
 
   const getPost = async () => {
     const API_URL = `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=${limit}`
@@ -49,16 +50,34 @@
     });
   }
 
+  const showLoader = () => {
+    $loader.classList.add('show')
+  }
+
+  const hideLoader = () => {
+    $loader.classList.remove('show')
+  }
+
   const loadPost = async () => {
-    const response = await getPost()
-    showPosts(response)
-    // load해온 post를 보여준다.
+    // 로딩 엘리먼트를 보여줌
+    showLoader()
+    try {
+      const response = await getPost()
+      showPosts(response)
+      // load해온 post를 보여준다.
+    } catch (error) {
+      console.error(error)
+    } finally {
+      // 로딩 엘리먼트를 사라지게 함
+      hideLoader()
+    }
   }
 
   const onScroll = () => {
     const {scrollTop, scrollHeight, clientHeight} = document.documentElement
 
     if (total == end) {
+      window.removeEventListener('scroll', onScroll)
       // total이 100이 되면 그냥 반환해준다.
       return
     }
@@ -74,6 +93,6 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     loadPost()
-    window.addEventListener('scroll', onScroll())
+    window.addEventListener('scroll', onScroll)
   })
 })()
